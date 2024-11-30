@@ -1,0 +1,21 @@
+security:
+    jwt:
+        token:
+            secret-key: Zajo1qVyuNJJt+C2RZHmMgSkuDFXGCfuzyEtyvIy19afZr9yjaHxkUwY++4UQzkbVvk8mjFYfy0Rv4he2e1i+hXlhxI+d3TiAH/Hl03k9x8lSDPtWwa5qvqyIXFDy0TwnRh4SHauhZO4n0Ep08kN6DgoxXPSXCGy1fci7qV0Jo7jvEXD2mrtyxWS+l9dUJp6lc4/D7El4EZ7/W5HzjV8dw6VTUiAvUqwDiz2LN0NPj7PAGHM59nrJTsM6uA0lDkLq1DxsCLYOhJV+n/G6aI2aUHhTWNtV1HvVUkDm9BIyozJOTINmIRrtnhlptvzULGa6jkd1v2gDApeYPdt5Teea7C1WX/i+6QwVzDaZy977Vw=
+spring:
+    application:
+        name: Dine Flow
+    mongo:
+        database:
+            name: dine_flow # Name Of the Collection
+            url: mongodb://localhost:27017  # Connection Url For the DB
+springdoc:
+    api-docs:
+        enabled: true
+        path: /api-docs
+    swagger-ui:
+        enabled: true
+        path: /api-docs/swagger-ui.html
+logging:
+    level:
+        org: ERROR
