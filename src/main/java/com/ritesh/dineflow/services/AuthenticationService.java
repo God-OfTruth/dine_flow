@@ -43,7 +43,7 @@ public class AuthenticationService {
 	public void register(RegistrationRequest request) {
 
 		Role role = roleRepository.findByRole(UserRole.USER).orElseThrow(() -> new UnauthorizedAccessException("Unable To Create Account"));
-		UserProfile profile = userProfileService.updateProfile(UserProfile.builder().build());
+		UserProfile profile = userProfileService.createUserProfile(UserProfile.builder().build());
 
 		User user = User.builder().email(request.getEmail())
 				.password(PasswordUtils.encodePassword(request.getPassword()))

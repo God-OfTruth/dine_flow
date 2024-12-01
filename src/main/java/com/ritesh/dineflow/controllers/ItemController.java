@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "Menu Items Controller")
 @RestController()
 @RequestMapping("/api/items")
@@ -28,8 +30,13 @@ public class ItemController {
 		return ResponseEntity.ok().body("Item Updated Successfully");
 	}
 
+	@GetMapping()
+	public ResponseEntity<List<Item>> getAllItems(){
+		return ResponseEntity.status(HttpStatus.FOUND).body(itemService.getAllItems());
+	}
+
 	@GetMapping("/{id}")
-	public ResponseEntity<Item> getAllItems(@PathVariable("id") String id){
+	public ResponseEntity<Item> getItemsById(@PathVariable("id") String id){
 		return ResponseEntity.status(HttpStatus.FOUND).body(itemService.getItemById(id));
 	}
 }

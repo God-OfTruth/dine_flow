@@ -43,4 +43,7 @@ public class ItemService {
 		return itemRepository.findByTagsIn(tags);
 	}
 
+	public List<Item> getAllItems(){
+		return itemRepository.findAll();
+	}
 }

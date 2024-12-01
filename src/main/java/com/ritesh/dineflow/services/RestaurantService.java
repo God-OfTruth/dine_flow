@@ -4,6 +4,8 @@ import com.ritesh.dineflow.exceptions.ResourceAlreadyPresentException;
 import com.ritesh.dineflow.exceptions.ResourceNotFoundException;
 import com.ritesh.dineflow.models.Restaurant;
 import com.ritesh.dineflow.repositories.RestaurantRepository;
+import com.ritesh.dineflow.utils.SecurityUtils;
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class RestaurantService {
 		if (restaurant.getId() != null) {
 			throw new ResourceAlreadyPresentException("Restaurant Already Present");
 		}
+		String currentUserId = SecurityUtils.getCurrentUserId();
+		restaurant.setOwnerId(currentUserId);
 		restaurantRepository.save(restaurant);
 	}
 

@@ -11,11 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "taxes")
 public class Tax {
-
-	@Id
-	private String id;
 
 	private String name;
 

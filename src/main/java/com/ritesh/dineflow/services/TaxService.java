@@ -16,17 +16,17 @@ public class TaxService {
 	private TaxRepository taxRepository;
 
 	public void createTaxEntry(Tax tax) {
-		if (tax.getId() == null) {
-			taxRepository.save(tax);
-			return;
-		}
+//		if (tax.getId() == null) {
+//			taxRepository.save(tax);
+//			return;
+//		}
 		throw new ResourceAlreadyPresentException("Tax Input is Already Present");
 	}
 
 	public void updateTaxEntry(Tax tax) {
-		if (tax.getId() == null) {
-			throw new ResourceNotFoundException("Tax Entry Not Found");
-		}
+//		if (tax.getId() == null) {
+//			throw new ResourceNotFoundException("Tax Entry Not Found");
+//		}
 		taxRepository.save(tax);
 	}
 
