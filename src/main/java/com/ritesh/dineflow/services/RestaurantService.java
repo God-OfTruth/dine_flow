@@ -5,8 +5,8 @@ import com.ritesh.dineflow.exceptions.ResourceNotFoundException;
 import com.ritesh.dineflow.models.Restaurant;
 import com.ritesh.dineflow.repositories.RestaurantRepository;
 import com.ritesh.dineflow.utils.SecurityUtils;
-import org.apache.catalina.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +18,14 @@ public class RestaurantService {
 	private RestaurantRepository restaurantRepository;
 
 	public void createRestaurantEntry(Restaurant restaurant) {
+		Restaurant previousRestaurant = restaurantRepository.findByName(restaurant.getName()).orElse(null);
 		if (restaurant.getId() != null) {
 			throw new ResourceAlreadyPresentException("Restaurant Already Present");
 		}
 		String currentUserId = SecurityUtils.getCurrentUserId();
+		if (previousRestaurant != null && previousRestaurant.getOwnerId().equals(currentUserId)) {
+			throw new ResourceAlreadyPresentException("Restaurant Already Present");
+		}
 		restaurant.setOwnerId(currentUserId);
 		restaurantRepository.save(restaurant);
 	}
@@ -30,7 +34,15 @@ public class RestaurantService {
 		if (restaurant.getId() == null) {
 			throw new ResourceNotFoundException("Restaurant not Found");
 		}
-		restaurantRepository.save(restaurant);
+		Restaurant previousRestaurant = restaurantRepository.findById(restaurant.getId()).orElse(null);
+		if (previousRestaurant != null) {
+			if (SecurityUtils.getCurrentUserId().equals(restaurant.getOwnerId())) {
+				restaurantRepository.save(restaurant);
+			} else {
+				throw new AccessDeniedException("Ask Administrator");
+			}
+		}
+
 	}
 
 	public Restaurant findByRestaurantId(String id) {
@@ -54,6 +66,10 @@ public class RestaurantService {
 	}
 
 	public List<Restaurant> findAllRestaurants() {
-		return restaurantRepository.findAll();
+		String currentUserId = SecurityUtils.getCurrentUserId();
+		if (SecurityUtils.isCurrentUserInRole("ROLE_SUPER_ADMIN")) {
+			return restaurantRepository.findAll();
+		}
+		return restaurantRepository.findByOwnerId(currentUserId);
 	}
 }

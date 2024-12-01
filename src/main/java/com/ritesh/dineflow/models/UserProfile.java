@@ -30,4 +30,7 @@ public class UserProfile {
 	@Schema(name = "address", example = "Varta, Varta,000000", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	private String address;
 
+	@Builder.Default
+	@Schema(name = "restaurantsLicensed", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	private int restaurantsLicensed = 1;
 }

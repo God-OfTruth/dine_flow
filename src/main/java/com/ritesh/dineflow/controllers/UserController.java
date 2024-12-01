@@ -28,4 +28,10 @@ public class UserController {
 		User savedUser = userService.saveUser(user);
 		return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
 	}
+
+	@PostMapping("/owner")
+	@PreAuthorize(("hasRole('ROLE_SUPER_ADMIN')"))
+	public ResponseEntity<User> createOwnerAccount(@RequestBody User user) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(userService.createRestaurantOwner(user));
+	}
 }

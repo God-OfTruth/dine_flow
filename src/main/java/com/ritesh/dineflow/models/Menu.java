@@ -4,7 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Getter
@@ -22,6 +22,11 @@ public class Menu {
 
 	private String description;
 
-	private List<String> items;
+	private Set<String> restaurantIds;
+
+	private Set<Item> items;
+
+	@Builder.Default
+	private boolean active = false;
 
 }

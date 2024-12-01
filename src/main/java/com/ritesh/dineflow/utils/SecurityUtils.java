@@ -108,10 +108,11 @@ public final class SecurityUtils {
 	 * @return true if the current user has the authority, false otherwise
 	 */
 	public static boolean isCurrentUserInRole(String authority) {
-		SecurityContext securityContext = SecurityContextHolder.getContext();
-		Authentication authentication = securityContext.getAuthentication();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null) {
-			return authentication.getAuthorities().contains(new SimpleGrantedAuthority(authority));
+			return authentication.getAuthorities().stream()
+					.map(GrantedAuthority::getAuthority)
+					.anyMatch(auth -> auth.equals(authority));
 		}
 		return false;
 	}

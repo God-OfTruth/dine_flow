@@ -4,7 +4,6 @@ import com.ritesh.dineflow.enums.Tag;
 import com.ritesh.dineflow.enums.TaxType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,6 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "items")
 public class Item {
 	@Id
 	private String id;
@@ -30,6 +28,10 @@ public class Item {
 	private List<String> mediaIds;
 
 	private Price basePrice;
+
+	private boolean enabled;
+
+	private double sellCount;
 
 	private Map<TaxType, Tax> taxes;
 

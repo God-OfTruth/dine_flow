@@ -2,7 +2,6 @@ package com.ritesh.dineflow.controllers;
 
 import com.ritesh.dineflow.models.Tax;
 import com.ritesh.dineflow.services.TaxService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Tax Controller", description = "Will handle all the Tax related to the Application use case")
-@RestController
-@RequestMapping("/api/taxes")
 public class TaxController {
 
 	@Autowired
