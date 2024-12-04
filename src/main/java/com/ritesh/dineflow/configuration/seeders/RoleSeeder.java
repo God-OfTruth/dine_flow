@@ -34,10 +34,11 @@ public class RoleSeeder implements ApplicationListener<ContextRefreshedEvent> {
 	}
 
 	private void loadRoles() {
-		List<UserRole> roles = List.of(UserRole.SUPER_ADMIN, UserRole.ADMIN,UserRole.MANAGER, UserRole.USER, UserRole.PUBLIC);
+		List<UserRole> roles = List.of(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.MANAGER, UserRole.USER, UserRole.PUBLIC, UserRole.STAFF);
 		Map<UserRole, String> roleDescriptionMap = Map.of(
 				UserRole.PUBLIC, "Public Role",
 				UserRole.USER, "Default user role",
+				UserRole.STAFF, "Staff Role for Restaurants",
 				UserRole.ADMIN, "Administrator role",
 				UserRole.MANAGER, "Manger Role",
 				UserRole.SUPER_ADMIN, "Super Administrator role"

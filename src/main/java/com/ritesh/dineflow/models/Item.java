@@ -3,8 +3,6 @@ package com.ritesh.dineflow.models;
 import com.ritesh.dineflow.enums.Tag;
 import com.ritesh.dineflow.enums.TaxType;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-
 import java.util.List;
 import java.util.Map;
 
@@ -14,8 +12,6 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 public class Item {
-	@Id
-	private String id;
 
 	private String name;
 

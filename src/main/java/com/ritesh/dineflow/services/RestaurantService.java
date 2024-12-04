@@ -1,8 +1,11 @@
 package com.ritesh.dineflow.services;
 
+import com.ritesh.dineflow.exceptions.LicenseException;
 import com.ritesh.dineflow.exceptions.ResourceAlreadyPresentException;
 import com.ritesh.dineflow.exceptions.ResourceNotFoundException;
 import com.ritesh.dineflow.models.Restaurant;
+import com.ritesh.dineflow.models.User;
+import com.ritesh.dineflow.models.UserProfile;
 import com.ritesh.dineflow.repositories.RestaurantRepository;
 import com.ritesh.dineflow.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +20,29 @@ public class RestaurantService {
 	@Autowired
 	private RestaurantRepository restaurantRepository;
 
+	@Autowired
+	private UserProfileService userProfileService;
+
 	public void createRestaurantEntry(Restaurant restaurant) {
+		User currentUser = SecurityUtils.getCurrentUser();
+		UserProfile userProfile = userProfileService.getById(currentUser.getProfileId());
+		long currentRestaurantCount = findByOwnerId(currentUser.getId()).size();
 		Restaurant previousRestaurant = restaurantRepository.findByName(restaurant.getName()).orElse(null);
+
 		if (restaurant.getId() != null) {
 			throw new ResourceAlreadyPresentException("Restaurant Already Present");
 		}
-		String currentUserId = SecurityUtils.getCurrentUserId();
-		if (previousRestaurant != null && previousRestaurant.getOwnerId().equals(currentUserId)) {
+
+		if (previousRestaurant != null && previousRestaurant.getOwnerId().equals(currentUser.getId())) {
 			throw new ResourceAlreadyPresentException("Restaurant Already Present");
 		}
-		restaurant.setOwnerId(currentUserId);
+
+		// Checks is User can Create more Restaurants.
+		if (userProfile.getRestaurantsLicensed() == currentRestaurantCount) {
+			throw new LicenseException("Reached Restaurant limit");
+		}
+
+		restaurant.setOwnerId(currentUser.getId());
 		restaurantRepository.save(restaurant);
 	}
 
@@ -46,11 +62,13 @@ public class RestaurantService {
 	}
 
 	public Restaurant findByRestaurantId(String id) {
-		return restaurantRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Restaurant Not Found"));
+		return restaurantRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Restaurant Not Found"));
 	}
 
 	public Restaurant findByRestaurantName(String name) {
-		return restaurantRepository.findByName(name).orElseThrow(() -> new ResourceNotFoundException("Restaurant Not Found"));
+		return restaurantRepository.findByName(name)
+				.orElseThrow(() -> new ResourceNotFoundException("Restaurant Not Found"));
 	}
 
 	public List<Restaurant> findByOwnerId(String ownerId) {
