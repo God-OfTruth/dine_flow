@@ -6,9 +6,6 @@ import com.ritesh.dineflow.repositories.UserProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Service
 public class UserProfileService {
 	@Autowired

@@ -4,7 +4,6 @@ import com.ritesh.dineflow.enums.UserRole;
 import com.ritesh.dineflow.models.User;
 import com.ritesh.dineflow.models.UserProfile;
 import com.ritesh.dineflow.repositories.RoleRepository;
-import com.ritesh.dineflow.repositories.UserProfileRepository;
 import com.ritesh.dineflow.services.UserProfileService;
 import com.ritesh.dineflow.services.UserService;
 import com.ritesh.dineflow.utils.PasswordUtils;
