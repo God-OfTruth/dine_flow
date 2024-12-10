@@ -3,6 +3,8 @@ package com.ritesh.dineflow.models;
 import com.ritesh.dineflow.enums.Tag;
 import com.ritesh.dineflow.enums.TaxType;
 import lombok.*;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,7 @@ public class Item {
 
 	private double sellCount;
 
-	private Map<TaxType, Tax> taxes;
+	@Builder.Default
+	private Map<TaxType, Tax> taxes = new HashMap<>();
 
 }

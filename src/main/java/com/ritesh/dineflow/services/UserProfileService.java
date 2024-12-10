@@ -11,6 +11,7 @@ public class UserProfileService {
 	@Autowired
 	private UserProfileRepository userProfileRepository;
 
+
 	public UserProfile getById(String id) {
 		return userProfileRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User Profile Not Present"));
 	}
@@ -22,7 +23,7 @@ public class UserProfileService {
 		throw new ResourceNotFoundException("No Profile Exist");
 	}
 
-	public UserProfile createUserProfile(UserProfile profile){
+	public UserProfile createUserProfile(UserProfile profile) {
 		return userProfileRepository.save(profile);
 	}
 }

@@ -3,6 +3,7 @@ package com.ritesh.dineflow.services;
 import com.ritesh.dineflow.exceptions.LicenseException;
 import com.ritesh.dineflow.exceptions.ResourceAlreadyPresentException;
 import com.ritesh.dineflow.exceptions.ResourceNotFoundException;
+import com.ritesh.dineflow.models.Menu;
 import com.ritesh.dineflow.models.Restaurant;
 import com.ritesh.dineflow.models.User;
 import com.ritesh.dineflow.models.UserProfile;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RestaurantService {
@@ -22,6 +25,9 @@ public class RestaurantService {
 
 	@Autowired
 	private UserProfileService userProfileService;
+
+	@Autowired
+	private MenuService menuService;
 
 	public void createRestaurantEntry(Restaurant restaurant) {
 		User currentUser = SecurityUtils.getCurrentUser();
@@ -52,7 +58,20 @@ public class RestaurantService {
 		}
 		Restaurant previousRestaurant = restaurantRepository.findById(restaurant.getId()).orElse(null);
 		if (previousRestaurant != null) {
-			if (SecurityUtils.getCurrentUserId().equals(restaurant.getOwnerId())) {
+			if (SecurityUtils.getCurrentUserId().equals(previousRestaurant.getOwnerId())) {
+				Set<String> menuIds = new HashSet<>(restaurant.getMenuIds());
+				menuIds.addAll(previousRestaurant.getMenuIds());
+				if (!menuIds.isEmpty()) {
+					menuIds.forEach(id -> {
+						Menu menu = menuService.getMenuById(id);
+						Set<String> restaurantIds = new HashSet<>(menu.getRestaurantIds());
+						restaurantIds.add(restaurant.getId());
+						menu.setRestaurantIds(restaurantIds);
+						menuService.updateMenuEntry(menu);
+					});
+				}
+				restaurant.setMenuIds(menuIds.stream().toList());
+				restaurant.setOwnerId(previousRestaurant.getOwnerId());
 				restaurantRepository.save(restaurant);
 			} else {
 				throw new AccessDeniedException("Ask Administrator");

@@ -21,15 +21,19 @@ public class RestaurantController {
 
 	@PostMapping()
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ResponseEntity<String> addNewRestaurant(@RequestBody Restaurant restaurant) {
-		restaurantService.createRestaurantEntry(restaurant);
-		return ResponseEntity.status(HttpStatus.CREATED).body("Restaurant Created Successfully");
+	public ResponseEntity<Void> addNewRestaurant(@RequestBody Restaurant restaurant) {
+		if (restaurant.getId() == null) {
+			restaurantService.createRestaurantEntry(restaurant);
+		} else {
+			restaurantService.updateRestaurantEntry(restaurant);
+		}
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@PutMapping()
-	public ResponseEntity<String> updateRestaurant(@RequestBody Restaurant restaurant) {
+	public ResponseEntity<Void> updateRestaurant(@RequestBody Restaurant restaurant) {
 		restaurantService.updateRestaurantEntry(restaurant);
-		return ResponseEntity.status(HttpStatus.CREATED).body("Restaurant Updated Successfully");
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@GetMapping()
@@ -43,22 +47,22 @@ public class RestaurantController {
 	}
 
 	@GetMapping("by-name/{name}")
-	public ResponseEntity<Restaurant> getRestaurantByName(@PathVariable("name") String name){
+	public ResponseEntity<Restaurant> getRestaurantByName(@PathVariable("name") String name) {
 		return ResponseEntity.status(HttpStatus.OK).body(restaurantService.findByRestaurantName(name));
 	}
 
 	@GetMapping("by-owner/{ownerId}")
-	public ResponseEntity<List<Restaurant>> getRestaurantsByOwnerId(@PathVariable("ownerId") String ownerId){
+	public ResponseEntity<List<Restaurant>> getRestaurantsByOwnerId(@PathVariable("ownerId") String ownerId) {
 		return ResponseEntity.status(HttpStatus.OK).body(restaurantService.findByOwnerId(ownerId));
 	}
 
 	@GetMapping("by-manager/{managerId}")
-	public ResponseEntity<List<Restaurant>> getRestaurantsByManagerId(@PathVariable("managerId") String managerId){
+	public ResponseEntity<List<Restaurant>> getRestaurantsByManagerId(@PathVariable("managerId") String managerId) {
 		return ResponseEntity.status(HttpStatus.OK).body(restaurantService.findByManagerId(managerId));
 	}
 
 	@GetMapping("by-staff/{staffId}")
-	public ResponseEntity<List<Restaurant>> getRestaurantsByStaffId(@PathVariable("staffId") String staffId){
+	public ResponseEntity<List<Restaurant>> getRestaurantsByStaffId(@PathVariable("staffId") String staffId) {
 		return ResponseEntity.status(HttpStatus.OK).body(restaurantService.findByStaffId(staffId));
 	}
 }

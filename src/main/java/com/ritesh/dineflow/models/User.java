@@ -34,18 +34,27 @@ public class User extends AbstractAuditingEntity implements UserDetails {
 
 	private String profileId;
 
+	@JsonIgnore
+	@Builder.Default
 	private Set<Role> roles = new HashSet<>();
 
 	private String mobileNumber;
 
+	@Builder.Default
 	private boolean isExternalAccount = false;
 
-	private Boolean enabled;
+	@Builder.Default
+	private Boolean enabled = false;
 
 	private String oauthId;  // OAuth ID from the provider (Google, Facebook, etc.)
 
 	@JsonIgnore
 	private String oauthProvider; // Name of the OAuth provider (e.g., "google", "facebook", "etc.")
+
+	@Override
+	public boolean isEnabled() {
+		return enabled;
+	}
 
 	@SuppressWarnings("UnnecessaryLocalVariable")
 	@Override

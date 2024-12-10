@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "Menu Controller")
 @RestController
 @RequestMapping("/api/menus")
@@ -16,21 +18,25 @@ public class MenuController {
 	@Autowired
 	private MenuService menuService;
 
-	@PostMapping("/{restaurantId}")
-	public ResponseEntity<String> addMenuEntry(@PathVariable("restaurantId") String restaurantId,
-			@RequestBody Menu menu) {
-		menuService.createMenuEntry(menu, restaurantId);
-		return ResponseEntity.status(HttpStatus.CREATED).body("Successfully Created Menu");
+	@PostMapping()
+	public ResponseEntity<Void> addMenu(@RequestBody Menu menu) {
+		menuService.createMenuEntry(menu);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@PutMapping()
-	public ResponseEntity<String> updateMenuEntry(@RequestBody Menu menu) {
+	public ResponseEntity<Void> updateMenuEntry(@RequestBody Menu menu) {
 		menuService.updateMenuEntry(menu);
-		return ResponseEntity.status(HttpStatus.CREATED).body("Successfully Updated Menu");
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Menu> getMenuById(@PathVariable("id") String id) {
 		return ResponseEntity.status(HttpStatus.OK).body(menuService.getMenuById(id));
+	}
+
+	@GetMapping()
+	public ResponseEntity<List<Menu>> getAllMenus() {
+		return ResponseEntity.status(HttpStatus.OK).body(menuService.getAllMenus());
 	}
 }

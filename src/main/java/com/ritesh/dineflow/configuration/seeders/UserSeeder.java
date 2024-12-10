@@ -43,6 +43,7 @@ public class UserSeeder implements ApplicationListener<ContextRefreshedEvent> {
 						.email("dineflow@gmail.com")
 						.username("dine_flow")
 						.password(PasswordUtils.encodePassword("DineFlow@123"))
+						.enabled(true)
 						.roles(Set.of(Objects.requireNonNull(roleRepository.findByRole(UserRole.SUPER_ADMIN).orElse(null))))
 						.build()
 		);

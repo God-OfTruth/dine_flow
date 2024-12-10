@@ -27,15 +27,21 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		String password = (String) authentication.getCredentials();
 
 		// Load user from database
-		UserDetails userDetails = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException("No User Found"));
+		UserDetails userDetails = userService.findByUsername(username)
+				.orElseThrow(() -> new UserNotFoundException("No User Found"));
 
 		// Verify password
-		if (PasswordUtils.matchPassword(password, userDetails.getPassword())) {
-			return new UsernamePasswordAuthenticationToken(userDetails, password);
-		} else {
+		if (!PasswordUtils.matchPassword(password, userDetails.getPassword())) {
 			logger.info("Invalid Credentials");
 			throw new AuthenticationException("Invalid credentials") {
 			};
+		}
+		if (!userDetails.isEnabled()) {
+			logger.info("Disabled User");
+			throw new AuthenticationException("User is Disabled") {
+			};
+		} else {
+			return new UsernamePasswordAuthenticationToken(userDetails, password);
 		}
 	}
 

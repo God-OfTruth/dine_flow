@@ -32,15 +32,20 @@ public class UserService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-	public User findUserById(String id){
-		return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User not Found"));
+	public User findUserById(String id) {
+		return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not Found"));
+	}
+
+	public List<User> findAllUsers() {
+		return userRepository.findAll();
 	}
 
 	public User saveUser(User user) {
-		User previousUser = userRepository.findByEmail(user.getEmail()).orElse(userRepository.findByUsername(user.getUsername()).orElse(null));
+		User previousUser = userRepository.findByEmail(user.getEmail())
+				.orElse(userRepository.findByUsername(user.getUsername()).orElse(null));
 		if (previousUser == null) {
-			if(user.getProfileId() == null){
-				UserProfile userProfile = userProfileService.updateProfile(UserProfile.builder().build());
+			if (user.getProfileId() == null) {
+				UserProfile userProfile = userProfileService.createUserProfile(UserProfile.builder().build());
 				user.setProfileId(userProfile.getId());
 			}
 			return userRepository.save(user);
@@ -84,15 +89,17 @@ public class UserService {
 		return SecurityUtils.getCurrentUser();
 	}
 
-	public List<User> findAllByIds(List<String> ids){
+	public List<User> findAllByIds(List<String> ids) {
 		return userRepository.findAllById(ids);
 	}
 
 	public User createRestaurantOwner(User user) {
-		User previousUser = userRepository.findByEmail(user.getEmail()).orElse(userRepository.findByUsername(user.getUsername()).orElse(null));
-		if(previousUser == null){
+		User previousUser = userRepository.findByEmail(user.getEmail())
+				.orElse(userRepository.findByUsername(user.getUsername()).orElse(null));
+		if (previousUser == null) {
 			UserProfile userProfile = userProfileService.createUserProfile(UserProfile.builder().build());
-			Role role = roleRepository.findByRole(UserRole.ADMIN).orElseThrow(()-> new ResourceNotFoundException("Try Again")); // TODO: Send Mail to SuperAdmin
+			Role role = roleRepository.findByRole(UserRole.ADMIN)
+					.orElseThrow(() -> new ResourceNotFoundException("Try Again")); // TODO: Send Mail to SuperAdmin
 			// TODO: Send Mail to the Owner Email.
 			String password = PasswordUtils.generateRandomPassword(5);
 			String encodedPassword = PasswordUtils.encodePassword(password);
@@ -111,5 +118,14 @@ public class UserService {
 			return userRepository.save(owner);
 		}
 		throw new ResourceAlreadyPresentException("User with same email or username exists");
+	}
+
+	public void updateStatusOfTenant(String userId, boolean status) {
+		User user = findUserById(userId);
+		if (user.getEnabled().equals(status)) {
+			return;
+		}
+		user.setEnabled(status);
+		userRepository.save(user);
 	}
 }

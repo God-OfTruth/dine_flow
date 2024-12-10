@@ -50,6 +50,7 @@ public class AuthenticationService {
 				.username(request.getUsername())
 				.profileId(profile.getId())
 				.roles(Set.of(role))
+				.enabled(false)
 				.isExternalAccount(false)
 				.build();
 		User previousUser = userService.findByEmail(request.getEmail()).orElse(userService.findByUsername(request.getUsername()).orElse(null));
