@@ -27,6 +27,9 @@ public class RestaurantService {
 	private UserProfileService userProfileService;
 
 	@Autowired
+	private UserService userService;
+
+	@Autowired
 	private MenuService menuService;
 
 	public void createRestaurantEntry(Restaurant restaurant) {
@@ -46,6 +49,18 @@ public class RestaurantService {
 		// Checks is User can Create more Restaurants.
 		if (userProfile.getRestaurantsLicensed() == currentRestaurantCount) {
 			throw new LicenseException("Reached Restaurant limit");
+		}
+
+		if (restaurant.getManagers() != null) {
+			restaurant.getManagers().forEach(managerEmail -> {
+				User user = userService.findByEmail(managerEmail).orElse(userService.createRestaurantManager(managerEmail));
+			});
+		}
+
+		if (restaurant.getStaffs() != null) {
+			restaurant.getStaffs().forEach(managerEmail -> {
+				User user = userService.findByEmail(managerEmail).orElse(userService.createRestaurantStaff(managerEmail));
+			});
 		}
 
 		restaurant.setOwnerId(currentUser.getId());
@@ -70,6 +85,12 @@ public class RestaurantService {
 						menuService.updateMenuEntry(menu);
 					});
 				}
+				restaurant.getManagers().forEach(managerEmail -> {
+					User user = userService.findByEmail(managerEmail).orElse(userService.createRestaurantManager(managerEmail));
+				});
+				restaurant.getStaffs().forEach(managerEmail -> {
+					User user = userService.findByEmail(managerEmail).orElse(userService.createRestaurantStaff(managerEmail));
+				});
 				restaurant.setMenuIds(menuIds.stream().toList());
 				restaurant.setOwnerId(previousRestaurant.getOwnerId());
 				restaurantRepository.save(restaurant);

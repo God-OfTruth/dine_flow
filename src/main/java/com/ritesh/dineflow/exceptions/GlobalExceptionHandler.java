@@ -43,4 +43,9 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<Object> onLicenseExpiredException(LicenseExpiredException exception) {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
 	}
+
+	@ExceptionHandler({ TransactionException.class })
+	public ResponseEntity<Object> onTransactionException(TransactionException exception) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+	}
 }

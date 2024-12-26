@@ -32,5 +32,5 @@ public class UserProfile {
 
 	@Builder.Default
 	@Schema(name = "restaurantsLicensed", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private int restaurantsLicensed = 1;
+	private int restaurantsLicensed = 0;
 }

@@ -5,10 +5,7 @@ import com.ritesh.dineflow.services.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -20,5 +17,11 @@ public class UserProfileController {
 	@GetMapping("/{id}")
 	public ResponseEntity<UserProfile> getProfile(@PathVariable("id") String id) {
 		return ResponseEntity.status(HttpStatus.OK).body(userProfileService.getById(id));
+	}
+
+	@PostMapping("update-licensed-restaurant/{id}/{count}")
+	public ResponseEntity<Void> updateRestaurantCount(@PathVariable("id") String userProfileId, @PathVariable("count") int count) {
+		userProfileService.updateRestaurantLicensed(userProfileId, count);
+		return ResponseEntity.ok().build();
 	}
 }

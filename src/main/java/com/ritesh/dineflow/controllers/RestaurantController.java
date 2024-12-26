@@ -30,12 +30,6 @@ public class RestaurantController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
-	@PutMapping()
-	public ResponseEntity<Void> updateRestaurant(@RequestBody Restaurant restaurant) {
-		restaurantService.updateRestaurantEntry(restaurant);
-		return ResponseEntity.status(HttpStatus.OK).build();
-	}
-
 	@GetMapping()
 	public ResponseEntity<List<Restaurant>> getAllRestaurants() {
 		return ResponseEntity.status(HttpStatus.OK).body(restaurantService.findAllRestaurants());

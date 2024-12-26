@@ -3,7 +3,10 @@ package com.ritesh.dineflow.services;
 import com.ritesh.dineflow.exceptions.ResourceAlreadyPresentException;
 import com.ritesh.dineflow.exceptions.ResourceNotFoundException;
 import com.ritesh.dineflow.models.Menu;
+import com.ritesh.dineflow.models.Restaurant;
+import com.ritesh.dineflow.models.User;
 import com.ritesh.dineflow.repositories.MenuRepository;
+import com.ritesh.dineflow.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,9 @@ public class MenuService {
 
 	@Autowired
 	private MenuRepository menuRepository;
+
+//	@Autowired
+//	private RestaurantService restaurantService;
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') || hasAuthority('CREATE_MENU')")
 	public void createMenuEntry(Menu menu) {
@@ -52,6 +58,9 @@ public class MenuService {
 	}
 
 	public List<Menu> getAllMenus() {
+		User user = SecurityUtils.getCurrentUser();
+//		List<Restaurant> restaurantIds = restaurantService.findByOwnerId(user.getId());
+
 		return menuRepository.findAll();
 	}
 }

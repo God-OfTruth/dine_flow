@@ -1,8 +1,6 @@
 package com.ritesh.dineflow.controllers;
 
-import com.ritesh.dineflow.dto.AuthenticationRequest;
-import com.ritesh.dineflow.dto.AuthenticationResponse;
-import com.ritesh.dineflow.dto.RegistrationRequest;
+import com.ritesh.dineflow.dto.*;
 import com.ritesh.dineflow.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,12 +41,25 @@ public class AuthenticationController {
 			@ApiResponse(responseCode = "404", description = "User with Username is Not Registered Yet"),
 			@ApiResponse(responseCode = "401", description = "Username and/or Password Not Correct")
 	})
+
 	@PostMapping("/login")
 	public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
 		String token = authenticationService.authenticate(request);
 		AuthenticationResponse response = new AuthenticationResponse();
 		response.setAccessToken(token);
 		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/forgot-password")
+	public ResponseEntity<Void> forgotPassword(@RequestBody ForgotPassword password){
+		authenticationService.forgotPassword(password);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
+	@PostMapping("/reset-password")
+	public ResponseEntity<Void> resetPassword(@RequestBody ResetPassword resetPassword){
+		authenticationService.resetPassword(resetPassword);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 }
