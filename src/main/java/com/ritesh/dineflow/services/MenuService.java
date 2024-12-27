@@ -19,9 +19,6 @@ public class MenuService {
 	@Autowired
 	private MenuRepository menuRepository;
 
-//	@Autowired
-//	private RestaurantService restaurantService;
-
 	@PreAuthorize("hasRole('ROLE_ADMIN') || hasAuthority('CREATE_MENU')")
 	public void createMenuEntry(Menu menu) {
 		if (menu.getId() != null) {
@@ -58,9 +55,6 @@ public class MenuService {
 	}
 
 	public List<Menu> getAllMenus() {
-		User user = SecurityUtils.getCurrentUser();
-//		List<Restaurant> restaurantIds = restaurantService.findByOwnerId(user.getId());
-
-		return menuRepository.findAll();
+		return menuRepository.findByCreatedBy(SecurityUtils.getCurrentUserId());
 	}
 }

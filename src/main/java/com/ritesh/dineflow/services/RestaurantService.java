@@ -64,7 +64,14 @@ public class RestaurantService {
 		}
 
 		restaurant.setOwnerId(currentUser.getId());
-		restaurantRepository.save(restaurant);
+		Restaurant createdRestaurant = restaurantRepository.save(restaurant);
+		if(restaurant.getMenuIds() != null){
+			restaurant.getMenuIds().forEach((id)->{
+				Menu menu = menuService.getMenuById(id);
+				menu.getRestaurantIds().add(createdRestaurant.getId());
+				menuService.updateMenuEntry(menu);
+			});
+		}
 	}
 
 	public void updateRestaurantEntry(Restaurant restaurant) {

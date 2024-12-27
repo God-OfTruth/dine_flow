@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Document(collection = "menus")
-public class Menu {
+public class Menu extends AbstractAuditingEntity{
 
 	@Id
 	private String id;
