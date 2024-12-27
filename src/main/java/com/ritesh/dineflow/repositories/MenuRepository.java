@@ -10,4 +10,6 @@ public interface MenuRepository extends MongoRepository<Menu, String> {
 	Optional<Menu> findByName(String name);
 
 	List<Menu> findByRestaurantIdsIn(String id);
+
+	List<Menu> findByCreatedBy(String id);
 }

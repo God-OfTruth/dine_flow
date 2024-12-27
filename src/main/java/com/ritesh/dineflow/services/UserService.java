@@ -43,7 +43,10 @@ public class UserService {
 	}
 
 	public List<User> findAllUsers() {
-		return userRepository.findAll();
+		if(SecurityUtils.isCurrentUserInRole("ROLE_SUPER_ADMIN")){
+			return userRepository.findAll();
+		}
+		return userRepository.findByCreatedBy(SecurityUtils.getCurrentUserId());
 	}
 
 	public User saveUser(User user) {
