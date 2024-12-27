@@ -11,7 +11,7 @@ spring:
   mongo:
     database:
       name: dine_flow # Name Of the Collection
-      url: mongodb://localhost:27017 # Connection Url For the DB
+      url: mongodb+srv://dine_flow:dine_flow@web.v9mdl.mongodb.net # Connection Url For the DB
   mail: # configuration for email
     host: smtp.gmail.com
     port: 587
