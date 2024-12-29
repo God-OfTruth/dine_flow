@@ -1,6 +1,8 @@
 package com.ritesh.dineflow.configuration.security;
 
 import com.ritesh.dineflow.exceptions.UnauthorizedAccessException;
+import com.ritesh.dineflow.models.RefreshToken;
+import com.ritesh.dineflow.repositories.RefreshTokenRepository;
 import com.ritesh.dineflow.services.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -29,8 +31,14 @@ public class JwtTokenProvider {
 	@Value("${security.jwt.token.secret-key:secret}")
 	private String secretKey;
 
-	@Value("${security.jwt.token.expire-length:3600000}") // 1 hour in milliseconds
-	private long validityInMilliseconds;
+	@Value("${security.jwt.token.jwtExpirationMs:3600000}") // 1 hour in milliseconds
+	private long jwtValidityInMilliseconds;
+
+	@Value("${security.jwt.token.refreshJwtExpirationMs:86400000}") // 1 day in milliseconds
+	private long refreshJwtValidityInMilliseconds;
+
+	@Autowired
+	private RefreshTokenRepository refreshTokenRepository;
 
 	@Autowired
 	private UserService userService;
@@ -47,7 +55,7 @@ public class JwtTokenProvider {
 	public String generateToken(Authentication authentication, Claims extraClaims) {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		Date now = new Date();
-		Date validity = new Date(now.getTime() + validityInMilliseconds);
+		Date validity = new Date(now.getTime() + jwtValidityInMilliseconds);
 
 		return Jwts.builder()
 				.subject(userDetails.getUsername())
@@ -55,6 +63,23 @@ public class JwtTokenProvider {
 				.claims(extraClaims)
 				.expiration(validity)
 				.signWith(getSignInKey()).compact();
+	}
+
+	public RefreshToken generateRefreshToken(Authentication authentication, Claims claims) {
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		Date now = new Date();
+		Date validity = new Date(now.getTime() + refreshJwtValidityInMilliseconds);
+		RefreshToken token = RefreshToken.builder()
+				.expiry(validity.toInstant())
+				.userName(userDetails.getUsername())
+				.token(Jwts.builder()
+						.subject(userDetails.getUsername())
+						.issuedAt(now)
+						.claims(claims)
+						.expiration(validity)
+						.signWith(getSignInKey()).compact())
+				.build();
+		return refreshTokenRepository.save(token);
 	}
 
 	public Authentication getAuthentication(String token) {

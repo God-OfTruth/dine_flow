@@ -3,13 +3,12 @@ package com.ritesh.dineflow.services;
 import com.ritesh.dineflow.configuration.security.JwtTokenProvider;
 import com.ritesh.dineflow.dto.*;
 import com.ritesh.dineflow.enums.UserRole;
-import com.ritesh.dineflow.exceptions.InvalidRequestException;
-import com.ritesh.dineflow.exceptions.ResourceAlreadyPresentException;
-import com.ritesh.dineflow.exceptions.ResourceNotFoundException;
-import com.ritesh.dineflow.exceptions.UnauthorizedAccessException;
+import com.ritesh.dineflow.exceptions.*;
+import com.ritesh.dineflow.models.RefreshToken;
 import com.ritesh.dineflow.models.Role;
 import com.ritesh.dineflow.models.User;
 import com.ritesh.dineflow.models.UserProfile;
+import com.ritesh.dineflow.repositories.RefreshTokenRepository;
 import com.ritesh.dineflow.repositories.RoleRepository;
 import com.ritesh.dineflow.utils.PasswordUtils;
 import org.slf4j.Logger;
@@ -21,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +34,9 @@ public class AuthenticationService {
 
 	@Autowired
 	private UserProfileService userProfileService;
+
+	@Autowired
+	private RefreshTokenRepository refreshTokenRepository;
 
 	@Autowired
 	private JwtTokenProvider tokenProvider;
@@ -67,10 +70,29 @@ public class AuthenticationService {
 		}
 	}
 
-	public String authenticate(AuthenticationRequest request) {
+	public AuthenticationResponse authenticate(AuthenticationRequest request) {
 		Authentication authentication = authenticationProvider.authenticate(
 				new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-		return tokenProvider.generateToken(authentication, null);
+		String jwtToken = tokenProvider.generateToken(authentication, null);
+		RefreshToken refreshToken = tokenProvider.generateRefreshToken(authentication, null);
+		return AuthenticationResponse.builder()
+				.accessToken(jwtToken)
+				.refreshToken(refreshToken.getToken())
+				.build();
+	}
+
+	public AuthenticationResponse authenticateUsingRefreshToken(String refreshToken) {
+		RefreshToken token = refreshTokenRepository.findByToken(refreshToken).orElseThrow(() -> new ResourceNotFoundException("Try Resigning"));
+		if (token.getExpiry().compareTo(Instant.now()) < 0) {
+			throw new AuthExpiredException("Refresh Token Expired");
+		}
+		Authentication authentication = tokenProvider.getAuthentication(refreshToken);
+		String jwtToken = tokenProvider.generateToken(authentication, null);
+
+		return AuthenticationResponse.builder()
+				.refreshToken(token.getToken())
+				.accessToken(jwtToken)
+				.build();
 	}
 
 	public void forgotPassword(ForgotPassword forgotPassword) {
@@ -92,6 +114,7 @@ public class AuthenticationService {
 		context.setVariable("username", username);
 		context.setVariable("password", password);
 		context.setVariable("email", email);
+		context.setVariable("uriPath", "/reset-password");
 
 		emailService.sendMail(EmailInfo.builder()
 				.to(List.of(email))

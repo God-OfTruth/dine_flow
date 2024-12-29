@@ -7,6 +7,7 @@ import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,6 +22,9 @@ import java.util.List;
 @Service
 @Profile("prod")
 public class EmailService {
+
+	@Value("${spring.application.frontendURI:http://localhost:4200}") // Frontend Application URI
+	private String frontendURI;
 
 	@Autowired
 	private JavaMailSender mailSender;
@@ -46,6 +50,7 @@ public class EmailService {
 				}
 				helper.setFrom(emailInfo.getFrom());
 				helper.setSubject(emailInfo.getSubject());
+				emailInfo.getContext().setVariable("URI_PATH", (frontendURI + emailInfo.getContext().getVariable("uriPath")));
 				helper.setText(templateEngine.process(emailInfo.getTemplateName(), emailInfo.getContext()),
 						emailInfo.getHtml());
 				helper.setTo(to);

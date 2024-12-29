@@ -43,7 +43,7 @@ public class UserService {
 	}
 
 	public List<User> findAllUsers() {
-		if(SecurityUtils.isCurrentUserInRole("ROLE_SUPER_ADMIN")){
+		if (SecurityUtils.isCurrentUserInRole("ROLE_SUPER_ADMIN")) {
 			return userRepository.findAll();
 		}
 		return userRepository.findByCreatedBy(SecurityUtils.getCurrentUserId());
@@ -195,6 +195,7 @@ public class UserService {
 		context.setVariable("username", username);
 		context.setVariable("password", password);
 		context.setVariable("authority", authority);
+		context.setVariable("uriPath", "/sign-in");
 
 		emailService.sendMail(EmailInfo.builder()
 				.to(List.of(email))

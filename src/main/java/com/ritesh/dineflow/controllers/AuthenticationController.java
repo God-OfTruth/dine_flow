@@ -44,20 +44,22 @@ public class AuthenticationController {
 
 	@PostMapping("/login")
 	public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
-		String token = authenticationService.authenticate(request);
-		AuthenticationResponse response = new AuthenticationResponse();
-		response.setAccessToken(token);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(authenticationService.authenticate(request));
+	}
+
+	@PostMapping("/sign-in-with-token")
+	public ResponseEntity<AuthenticationResponse> loginByRefreshToken(@RequestBody RefreshTokenRequest tokenRequest) {
+		return ResponseEntity.ok(authenticationService.authenticateUsingRefreshToken(tokenRequest.getRefreshToken()));
 	}
 
 	@PostMapping("/forgot-password")
-	public ResponseEntity<Void> forgotPassword(@RequestBody ForgotPassword password){
+	public ResponseEntity<Void> forgotPassword(@RequestBody ForgotPassword password) {
 		authenticationService.forgotPassword(password);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@PostMapping("/reset-password")
-	public ResponseEntity<Void> resetPassword(@RequestBody ResetPassword resetPassword){
+	public ResponseEntity<Void> resetPassword(@RequestBody ResetPassword resetPassword) {
 		authenticationService.resetPassword(resetPassword);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
