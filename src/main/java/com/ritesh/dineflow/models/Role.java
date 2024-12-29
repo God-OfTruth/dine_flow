@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -21,5 +22,6 @@ public class Role extends AbstractAuditingEntity {
 	private UserRole role;
 	private String description;
 
-	private Set<Permission> permissions;
+	@Builder.Default
+	private Set<Permission> permissions = new HashSet<>();
 }

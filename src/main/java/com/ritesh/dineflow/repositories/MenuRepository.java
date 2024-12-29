@@ -9,7 +9,8 @@ import java.util.Optional;
 public interface MenuRepository extends MongoRepository<Menu, String> {
 	Optional<Menu> findByName(String name);
 
+	List<Menu> findByCreatedBy(String id);
+
 	List<Menu> findByRestaurantIdsIn(String id);
 
-	List<Menu> findByCreatedBy(String id);
 }

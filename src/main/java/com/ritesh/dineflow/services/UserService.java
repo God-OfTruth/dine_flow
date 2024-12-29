@@ -195,7 +195,7 @@ public class UserService {
 		context.setVariable("username", username);
 		context.setVariable("password", password);
 		context.setVariable("authority", authority);
-		context.setVariable("uriPath", "/sign-in");
+		context.setVariable("uriPath", "/reset-password");
 
 		emailService.sendMail(EmailInfo.builder()
 				.to(List.of(email))
