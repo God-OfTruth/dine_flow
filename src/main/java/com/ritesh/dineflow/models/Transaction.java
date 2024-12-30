@@ -26,7 +26,7 @@ public class Transaction extends AbstractAuditingEntity {
 	private TransactionMethodType methodType;
 
 	@NonNull
-	private List<Item> items;
+	private List<TransactionItem> items;
 
 	@NonNull
 	private Price finalPrice;

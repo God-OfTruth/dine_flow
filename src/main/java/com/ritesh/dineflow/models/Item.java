@@ -25,7 +25,7 @@ public class Item {
 
 	private List<String> mediaIds;
 
-	private Price basePrice;
+	private List<ItemOption> itemOptions;
 
 	private boolean enabled;
 
