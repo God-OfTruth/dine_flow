@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Getter
 @Setter
@@ -14,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Document(collection = "menus")
-public class Menu extends AbstractAuditingEntity{
+public class Menu extends AbstractAuditingEntity {
 
 	@Id
 	private String id;
@@ -29,5 +30,4 @@ public class Menu extends AbstractAuditingEntity{
 
 	@Builder.Default
 	private boolean active = false;
-
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -34,16 +35,20 @@ public class Restaurant {
 	private String ownerId;
 
 	@Schema(name = "menuIds", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private List<String> menuIds;
+	@Builder.Default
+	private List<String> menuIds = new ArrayList<>();
 
 	@Schema(name = "managers", description = "Email Ids of the Managers", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private List<String> managers;
+	@Builder.Default
+	private List<String> managers = new ArrayList<>();
 
 	@Schema(name = "staffs", description = "Email Ids of the Staffs", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private List<String> staffs;
+	@Builder.Default
+	private List<String> staffs = new ArrayList<>();
 
 	@Schema(name = "mediaIds", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private List<String> mediaIds;
+	@Builder.Default
+	private List<String> mediaIds = new ArrayList<>();
 
 	@Schema(name = "address", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	private Address address;

@@ -3,8 +3,6 @@ package com.ritesh.dineflow.services;
 import com.ritesh.dineflow.exceptions.ResourceAlreadyPresentException;
 import com.ritesh.dineflow.exceptions.ResourceNotFoundException;
 import com.ritesh.dineflow.models.Menu;
-import com.ritesh.dineflow.models.Restaurant;
-import com.ritesh.dineflow.models.User;
 import com.ritesh.dineflow.repositories.MenuRepository;
 import com.ritesh.dineflow.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +53,9 @@ public class MenuService {
 	}
 
 	public List<Menu> getAllMenus() {
+		if (SecurityUtils.isCurrentUserInRole("ROLE_SUPER_ADMIN")) {
+			return menuRepository.findAll();
+		}
 		return menuRepository.findByCreatedBy(SecurityUtils.getCurrentUserId());
 	}
 }
