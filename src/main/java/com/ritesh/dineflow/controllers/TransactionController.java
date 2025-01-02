@@ -1,5 +1,6 @@
 package com.ritesh.dineflow.controllers;
 
+import com.ritesh.dineflow.dto.TransactionFilterDTO;
 import com.ritesh.dineflow.models.Transaction;
 import com.ritesh.dineflow.services.TransactionService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,9 +19,9 @@ public class TransactionController {
 	@Autowired
 	private TransactionService transactionService;
 
-	@GetMapping()
-	public ResponseEntity<List<Transaction>> getAllTransactions() {
-		return ResponseEntity.status(HttpStatus.OK).body(transactionService.findAllTransactions());
+	@PostMapping("/filter")
+	public ResponseEntity<List<Transaction>> getAllTransactions(@RequestBody TransactionFilterDTO filterDTO) {
+		return ResponseEntity.status(HttpStatus.OK).body(transactionService.findAllTransactions(filterDTO));
 	}
 
 	@GetMapping("/{id}")

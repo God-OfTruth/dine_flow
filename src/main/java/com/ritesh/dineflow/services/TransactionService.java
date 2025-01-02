@@ -1,5 +1,6 @@
 package com.ritesh.dineflow.services;
 
+import com.ritesh.dineflow.dto.TransactionFilterDTO;
 import com.ritesh.dineflow.enums.TransactionMethodType;
 import com.ritesh.dineflow.exceptions.ResourceAlreadyPresentException;
 import com.ritesh.dineflow.exceptions.ResourceNotFoundException;
@@ -9,18 +10,31 @@ import com.ritesh.dineflow.models.User;
 import com.ritesh.dineflow.repositories.TransactionRepository;
 import com.ritesh.dineflow.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
 public class TransactionService {
+
+	@Value("${spring.application.timezone:Asia/Kolkata}")
+	private String timezone;
 
 	@Autowired
 	private TransactionRepository transactionRepository;
 
 	@Autowired
 	private RestaurantService restaurantService;
+
+	@Autowired
+	private MongoTemplate mongoTemplate;
 
 	public void createTransactionEntry(Transaction transaction) {
 		if (transaction.getId() != null) {
@@ -57,7 +71,27 @@ public class TransactionService {
 		return transactionRepository.findByUserId(currentUser.getId());
 	}
 
-	public List<Transaction> findByRestaurantId(String restaurantId){
+	public List<Transaction> findAllTransactions(TransactionFilterDTO filterDTO) {
+		Query query = new Query();
+		if (filterDTO.getMethodType() != null && !filterDTO.getMethodType().isEmpty()) {
+			query.addCriteria(Criteria.where("methodType").in(filterDTO.getMethodType()));
+		}
+		if (filterDTO.getRestaurants() != null && !filterDTO.getRestaurants().isEmpty()) {
+			query.addCriteria(Criteria.where("restaurantId").in(filterDTO.getRestaurants()));
+		}
+		LocalDateTime startTime = LocalDateTime.ofInstant(
+				Instant.ofEpochMilli(filterDTO.getStartTime()),
+				ZoneId.of(timezone)
+		);
+		LocalDateTime endTime = LocalDateTime.ofInstant(
+				Instant.ofEpochMilli(filterDTO.getEndTime()),
+				ZoneId.of(timezone)
+		);
+		query.addCriteria(Criteria.where("created_date").gte(startTime).lte(endTime));
+		return mongoTemplate.find(query, Transaction.class);
+	}
+
+	public List<Transaction> findByRestaurantId(String restaurantId) {
 		return transactionRepository.findByRestaurantId(restaurantId);
 	}
 }
