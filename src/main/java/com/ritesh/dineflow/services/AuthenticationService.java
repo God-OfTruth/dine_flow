@@ -74,6 +74,7 @@ public class AuthenticationService {
 		Authentication authentication = authenticationProvider.authenticate(
 				new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 		String jwtToken = tokenProvider.generateToken(authentication, null);
+		tokenProvider.removeAllRefreshTokenByUserId(request.getUsername());
 		RefreshToken refreshToken = tokenProvider.generateRefreshToken(authentication, null);
 		return AuthenticationResponse.builder()
 				.accessToken(jwtToken)

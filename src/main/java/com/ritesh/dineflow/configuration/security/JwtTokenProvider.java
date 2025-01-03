@@ -82,6 +82,10 @@ public class JwtTokenProvider {
 		return refreshTokenRepository.save(token);
 	}
 
+	public void removeAllRefreshTokenByUserId(String username) {
+		refreshTokenRepository.deleteByUserName(username);
+	}
+
 	public Authentication getAuthentication(String token) {
 		// Extract username from token
 		String username = getUsername(token);
