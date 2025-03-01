@@ -14,8 +14,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "menus")
-public class Menu extends AbstractAuditingEntity {
+@Document(collection = "categories")
+public class Categories extends AbstractAuditingEntity {
 
 	@Id
 	private String id;
@@ -27,6 +27,8 @@ public class Menu extends AbstractAuditingEntity {
 	private Set<String> restaurantIds;
 
 	private List<Item> items;
+
+	private String mediaId;
 
 	@Builder.Default
 	private boolean active = false;

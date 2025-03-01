@@ -3,7 +3,7 @@ package com.ritesh.dineflow.services;
 import com.ritesh.dineflow.exceptions.LicenseException;
 import com.ritesh.dineflow.exceptions.ResourceAlreadyPresentException;
 import com.ritesh.dineflow.exceptions.ResourceNotFoundException;
-import com.ritesh.dineflow.models.Menu;
+import com.ritesh.dineflow.models.Categories;
 import com.ritesh.dineflow.models.Restaurant;
 import com.ritesh.dineflow.models.User;
 import com.ritesh.dineflow.models.UserProfile;
@@ -30,7 +30,7 @@ public class RestaurantService {
 	private UserService userService;
 
 	@Autowired
-	private MenuService menuService;
+	private CategoriesService menuService;
 
 	public void createRestaurantEntry(Restaurant restaurant) {
 		User currentUser = SecurityUtils.getCurrentUser();
@@ -67,7 +67,7 @@ public class RestaurantService {
 		Restaurant createdRestaurant = restaurantRepository.save(restaurant);
 		if(restaurant.getMenuIds() != null){
 			restaurant.getMenuIds().forEach((id)->{
-				Menu menu = menuService.getMenuById(id);
+				Categories menu = menuService.getMenuById(id);
 				menu.getRestaurantIds().add(createdRestaurant.getId());
 				menuService.updateMenuEntry(menu);
 			});
@@ -85,7 +85,7 @@ public class RestaurantService {
 				menuIds.addAll(previousRestaurant.getMenuIds());
 				if (!menuIds.isEmpty()) {
 					menuIds.forEach(id -> {
-						Menu menu = menuService.getMenuById(id);
+						Categories menu = menuService.getMenuById(id);
 						Set<String> restaurantIds = new HashSet<>(menu.getRestaurantIds());
 						restaurantIds.add(restaurant.getId());
 						menu.setRestaurantIds(restaurantIds);

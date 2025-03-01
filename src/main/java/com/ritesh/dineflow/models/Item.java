@@ -34,4 +34,7 @@ public class Item {
 	@Builder.Default
 	private Map<TaxType, Tax> taxes = new HashMap<>();
 
+	@Builder.Default
+	private Map<String, String> meta = new HashMap<>();
+
 }
