@@ -1,13 +1,22 @@
 version: '3.8'
 services:
-  dineflow-app:
-    image: dineflow-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - SPRING_DATA_MONGODB_URI=mongodb+srv://dine_flow:dine_flow@web.v9mdl.mongodb.net/
+#  dineflow-app:
+#    image: dineflow-app
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - '8080:8080'
+#    depends_on:
+#      - mongodb
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=prod
+#      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017
+  mongodb:
+    image: mongo
     ports:
-      - '8080:8080'
-    depends_on:
-      - mongodb
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+volumes:
+  mongodb_data:
