@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -111,20 +112,20 @@ public class JwtTokenProvider {
 		return claimsResolver.apply(claims);
 	}
 
-	@SuppressWarnings("deprecation")
 	private Claims extractAllClaims(String token) {
 		try {
-			return Jwts
+			byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+			SecretKey key = Keys.hmacShaKeyFor(keyBytes);
+			return (Claims) Jwts
 					.parser()
-					.setSigningKey(secretKey)
+					.verifyWith(key)
 					.build()
-					.parseClaimsJws(token)
+					.parse(token)
 					.getPayload();
 		} catch (Exception e) {
 			LOGGER.info("Exception at extractAllClaims {}", e.getMessage());
-			throw new UnauthorizedAccessException("User Not Authorise");
+			throw new UnauthorizedAccessException("User Not Authorised");
 		}
-
 	}
 
 	// Extract token from Authorization header

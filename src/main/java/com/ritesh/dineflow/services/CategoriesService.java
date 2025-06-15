@@ -2,8 +2,8 @@ package com.ritesh.dineflow.services;
 
 import com.ritesh.dineflow.exceptions.ResourceAlreadyPresentException;
 import com.ritesh.dineflow.exceptions.ResourceNotFoundException;
-import com.ritesh.dineflow.models.Menu;
-import com.ritesh.dineflow.repositories.MenuRepository;
+import com.ritesh.dineflow.models.Categories;
+import com.ritesh.dineflow.repositories.CategoriesRepository;
 import com.ritesh.dineflow.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class MenuService {
+public class CategoriesService {
 
 	@Autowired
-	private MenuRepository menuRepository;
+	private CategoriesRepository menuRepository;
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') || hasAuthority('CREATE_MENU')")
-	public void createMenuEntry(Menu menu) {
+	public void createMenuEntry(Categories menu) {
 		if (menu.getId() != null) {
 			updateMenuEntry(menu);
 			return;
@@ -30,11 +30,11 @@ public class MenuService {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') || hasAuthority('UPDATE_MENU')")
-	public void updateMenuEntry(Menu menu) {
+	public void updateMenuEntry(Categories menu) {
 		if (menu.getId() == null) {
 			throw new ResourceNotFoundException("Menu is Not Present");
 		}
-		Menu previousMenu = menuRepository.findById(menu.getId())
+		Categories previousMenu = menuRepository.findById(menu.getId())
 				.orElseThrow(() -> new ResourceNotFoundException("Menu is Not Present"));
 		previousMenu.setName(menu.getName());
 		previousMenu.setDescription(menu.getDescription());
@@ -44,15 +44,15 @@ public class MenuService {
 		menuRepository.save(previousMenu);
 	}
 
-	public Menu getMenuById(String id) {
+	public Categories getMenuById(String id) {
 		return menuRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Menu Found"));
 	}
 
-	public List<Menu> getMenusByRestaurant(String restaurantId) {
+	public List<Categories> getMenusByRestaurant(String restaurantId) {
 		return menuRepository.findByRestaurantIdsIn(restaurantId);
 	}
 
-	public List<Menu> getAllMenus() {
+	public List<Categories> getAllMenus() {
 		if (SecurityUtils.isCurrentUserInRole("ROLE_SUPER_ADMIN")) {
 			return menuRepository.findAll();
 		}
