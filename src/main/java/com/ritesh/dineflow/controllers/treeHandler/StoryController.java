@@ -18,22 +18,19 @@ public class StoryController {
 
 
 	@PostMapping()
-	public ResponseEntity<Void> saveStory(@RequestBody Story story){
+	public ResponseEntity<Void> saveStory(@RequestBody Story story) {
 		storyService.saveStory(story);
 		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping()
-	public ResponseEntity<List<Story>> getAllStories(){
+	public ResponseEntity<List<Story>> getAllStories() {
 		String currentUserId = SecurityUtils.getCurrentUserId();
-		if (SecurityUtils.isCurrentUserInRole("ROLE_SUPER_ADMIN")) {
-			return ResponseEntity.ok().body(storyService.getAllStory());
-		}
 		return ResponseEntity.ok().body(storyService.getStoriesByOwner(currentUserId));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Story> getStory(@PathVariable String id){
+	public ResponseEntity<Story> getStory(@PathVariable String id) {
 		return ResponseEntity.ok().body(storyService.getStoryById(id));
 	}
 }
