@@ -22,6 +22,6 @@ public class Story {
 	private String owner;
 	private List<String> thumbnails;
 	private List<String> tags;
-	private List<DialogTree> dialogTree;
+	private StoryNode dialogTree;
 	private Map<String, String> meta = new HashMap<>();
 }
